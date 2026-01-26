@@ -1,0 +1,10 @@
+# Core dependencies for all RAG projects
+langchain-huggingface
+langchain-community
+langchain-core
+langchain-groq
+langchain-text-splitters
+bs4
+chromadb
+tiktoken
+numpy
