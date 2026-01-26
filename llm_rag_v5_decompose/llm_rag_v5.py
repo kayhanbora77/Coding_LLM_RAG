@@ -16,8 +16,8 @@ from operator import itemgetter
 # ==========================================
 # CONFIGURATION CONSTANTS
 # ==========================================
-GROQ_API_KEY = "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"  # From console.groq.com
-HUGGINGFACEHUB_API_TOKEN = "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"  # From huggingface.co
+GROQ_API_KEY = ""  # From console.groq.com
+HUGGINGFACEHUB_API_TOKEN = ""  # From huggingface.co
 EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
 LLM_MODEL_NAME = "llama-3.1-8b-instant"
 CHUNK_SIZE = 300
