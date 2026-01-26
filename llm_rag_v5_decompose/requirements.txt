@@ -1,0 +1,8 @@
+langchain-huggingface
+langchain-community
+langchain-core
+langchain-groq
+langchain-text-splitters
+bs4
+chromadb
+tiktoken
