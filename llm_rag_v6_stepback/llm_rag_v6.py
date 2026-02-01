@@ -1,17 +1,22 @@
 import os
+from dotenv import load_dotenv
 
 # Set User Agent FIRST to avoid warnings
 os.environ["USER_AGENT"] = "RAG-Learning-Bot/1.0"
 
+# Load environment variables from .env file
+load_dotenv()
+
+from langchain_core.runnables import RunnableLambda
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from bs4.filter import SoupStrainer
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
-from langchain_core.runnables import RunnableLambda
-from langchain_groq import ChatGroq
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
+from langchain_groq import ChatGroq
+from langchain_core.output_parsers import StrOutputParser
+from operator import itemgetter
 
 # ==========================================
 # CONFIGURATION CONSTANTS
@@ -83,8 +88,8 @@ def main():
         "output": "what can the members of The Police do?",
     },
     {
-        "input": "Jan Sindel's was born in what country?",
-        "output": "what is Jan Sindel's personal history?",
+        "input": "Jan Sindel’s was born in what country?",
+        "output": "what is Jan Sindel’s personal history?",
     },
     ]
     # We now transform these to example messages
@@ -141,7 +146,10 @@ def main():
         | StrOutputParser()
     )
 
-    chain.invoke({"question": question})
+
+    print("\nGenerating Answer...\n")
+    final_answer = chain.invoke({"question": question})
+    print(f"Answer:\n{final_answer}")
 
 
 if __name__ == "__main__":
