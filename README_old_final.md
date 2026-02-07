@@ -14,7 +14,6 @@ This project contains multiple versions of RAG systems, each building upon the p
 - **llm_rag_v6**: Step-Back Prompting for enhanced reasoning
 - **llm_rag_v7**: HyDE (Hypothetical Document Embeddings) for improved retrieval
 - **llm_rag_v8**: Logic-Based Query Routing for specialized data sources
-- **llm_rag_v9**: Semantic Routing using cosine similarity for prompt selection
 
 ## Features
 
@@ -92,11 +91,8 @@ Coding_LLM_RAG/
 ├── llm_rag_v7_hyde/      # HyDE Implementation
 │   ├── llm_rag_v7.py
 │   └── README.md
-├── llm_rag_v8_logic_route/ # Logic-Based Routing
-│   ├── llm_rag_v8.py
-│   └── README.md
-└── llm_rag_v9_sem_route/ # Semantic Routing
-    ├── llm_rag_v9.py
+└── llm_rag_v8_logic_route/ # Logic-Based Routing
+    ├── llm_rag_v8.py
     └── README.md
 ```
 
@@ -124,10 +120,6 @@ python llm_rag_v7.py
 # For v8 with logic routing
 cd ../llm_rag_v8_logic_route
 python llm_rag_v8.py
-
-# For v9 with semantic routing
-cd ../llm_rag_v9_sem_route
-python llm_rag_v9.py
 ```
 
 ## Version Descriptions
@@ -180,12 +172,6 @@ python llm_rag_v9.py
 - Programming language detection in queries
 - Specialized processing chains for different data sources
 
-### llm_rag_v9: Semantic Routing
-- Semantic routing using cosine similarity for prompt selection
-- Calculates similarity between queries and prompt templates
-- Dynamic prompt selection based on content similarity
-- Domain-specific processing based on similarity scores
-
 ## Dependencies
 
 The project uses various LangChain components and external services:
@@ -200,7 +186,6 @@ The project uses various LangChain components and external services:
 - `tiktoken`: Tokenization utilities
 - `numpy`: Numerical computing for similarity calculations
 - `pydantic`: For structured output models
-- `scikit-learn`: For cosine similarity calculations
 
 ## Configuration
 

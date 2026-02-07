@@ -1,12 +1,23 @@
-from langchain_core.output_parsers import StrOutputParser
-from langchain.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+import os
+from dotenv import load_dotenv
+
+# Set User Agent FIRST to avoid warnings
+os.environ["USER_AGENT"] = "RAG-Learning-Bot/1.0"
+
+# Load environment variables from .env file
+load_dotenv()
+from typing import Literal
+from pydantic import BaseModel, Field
+from langchain_core.runnables import RunnableLambda
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from bs4.filter import SoupStrainer
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import os
+from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
+from langchain_groq import ChatGroq
+from langchain_core.output_parsers import StrOutputParser
+from operator import itemgetter
 
 # ==========================================
 # CONFIGURATION CONSTANTS
@@ -60,6 +71,28 @@ def create_index(splits, embedding_model_name, k_value):
     return vectorstore, retriever
 
 
+# Data model
+class RouteQuery(BaseModel):
+    """Route a user query to the most relevant datasource."""
+
+    datasource: Literal["python_docs", "js_docs", "golang_docs"] = Field(
+        ...,
+        description="Given a user question choose which datasource would be most relevant for answering their question",
+    )
+
+
+def choose_route(result):
+    if "python_docs" in result.datasource.lower():
+        ### Logic here
+        return "chain for python_docs"
+    elif "js_docs" in result.datasource.lower():
+        ### Logic here
+        return "chain for js_docs"
+    else:
+        ### Logic here
+        return "golang_docs"
+
+
 def main():
     """Main function to execute the RAG pipeline."""
     # Setup environment
@@ -72,45 +105,39 @@ def main():
     print("Creating index...")
     vectorstore, retriever = create_index(splits, EMBEDDING_MODEL_NAME, RETRIEVAL_K)
 
-    # HyDE document generation
-    template = """Please write a scientific paper passage to answer the question
-    Question: {question}
-    Passage:"""
-    prompt_hyde = ChatPromptTemplate.from_template(template)
+    # LLM with function call
+    llm = ChatGroq(model=LLM_MODEL_NAME, temperature=0)
+    structured_llm = llm.with_structured_output(RouteQuery)
 
+    # Prompt
+    system = """You are an expert at routing a user question to the appropriate data source.
 
-    generate_docs_for_retrieval = (
-        prompt_hyde | ChatGroq(model=LLM_MODEL_NAME, temperature=0) | StrOutputParser()
+    Based on the programming language the question is referring to, route it to the relevant data source."""
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system),
+            ("human", "{question}"),
+        ]
     )
 
-    # Run
-    question = "What is task decomposition for LLM agents?"
-    generate_docs_for_retrieval.invoke({"question":question})
+    # Define router
+    router = prompt | structured_llm
 
-    # Retrieve
-    retrieval_chain = generate_docs_for_retrieval | retriever
-    retrieved_docs = retrieval_chain.invoke({"question":question})
+    question = """Why doesn't the following code work:
 
-    # RAG
-    template = """Answer the following question based on this context:
+    from langchain_core.prompts import ChatPromptTemplate
 
-    {context}
-
-    Question: {question}
+    prompt = ChatPromptTemplate.from_messages(["human", "speak in {language}"])
+    prompt.invoke("french")
     """
 
-    prompt = ChatPromptTemplate.from_template(template)
+    result = router.invoke({"question": question})
+    print(result)
+    RouteQuery(datasource='python_docs')
 
-    final_rag_chain = (
-        prompt
-        | ChatGroq(model=LLM_MODEL_NAME, temperature=0)
-        | StrOutputParser()
-    )
-
-
-    print("\nGenerating Answer...\n")
-    final_answer = final_rag_chain.invoke({"context":retrieved_docs,"question":question})
-    print(f"Answer:\n{final_answer}")
+    full_chain = router | RunnableLambda(choose_route)
+    full_chain.invoke({"question": question})
 
 if __name__ == "__main__":
     main()

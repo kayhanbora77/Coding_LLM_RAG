@@ -12,9 +12,6 @@ This project contains multiple versions of RAG systems, each building upon the p
 - **llm_rag_v4**: Implementation of RAG-Fusion and Reciprocal Rank Fusion
 - **llm_rag_v5**: Task Decomposition for handling complex questions
 - **llm_rag_v6**: Step-Back Prompting for enhanced reasoning
-- **llm_rag_v7**: HyDE (Hypothetical Document Embeddings) for improved retrieval
-- **llm_rag_v8**: Logic-Based Query Routing for specialized data sources
-- **llm_rag_v9**: Semantic Routing using cosine similarity for prompt selection
 
 ## Features
 
@@ -86,17 +83,8 @@ Coding_LLM_RAG/
 │   ├── llm_rag_v5.py
 │   ├── requirements.txt
 │   └── README.md
-├── llm_rag_v6_stepback/  # Step-Back Prompting
-│   ├── llm_rag_v6.py
-│   └── README.md
-├── llm_rag_v7_hyde/      # HyDE Implementation
-│   ├── llm_rag_v7.py
-│   └── README.md
-├── llm_rag_v8_logic_route/ # Logic-Based Routing
-│   ├── llm_rag_v8.py
-│   └── README.md
-└── llm_rag_v9_sem_route/ # Semantic Routing
-    ├── llm_rag_v9.py
+└── llm_rag_v6_stepback/  # Step-Back Prompting
+    ├── llm_rag_v6.py
     └── README.md
 ```
 
@@ -116,18 +104,6 @@ python llm_rag_v2.py
 # For v6 with step-back prompting
 cd ../llm_rag_v6_stepback
 python llm_rag_v6.py
-
-# For v7 with HyDE
-cd ../llm_rag_v7_hyde
-python llm_rag_v7.py
-
-# For v8 with logic routing
-cd ../llm_rag_v8_logic_route
-python llm_rag_v8.py
-
-# For v9 with semantic routing
-cd ../llm_rag_v9_sem_route
-python llm_rag_v9.py
 ```
 
 ## Version Descriptions
@@ -168,24 +144,6 @@ python llm_rag_v9.py
 - Uses context from both original and step-back queries
 - Improved handling of complex reasoning tasks
 
-### llm_rag_v7: HyDE (Hypothetical Document Embeddings)
-- Generates hypothetical documents to improve retrieval
-- Two-stage process: document generation then retrieval
-- Scientific paper style passage generation
-- Enhanced context retrieval through generated content
-
-### llm_rag_v8: Logic-Based Query Routing
-- Logic-based routing for directing queries to appropriate data sources
-- Structured output using Pydantic models
-- Programming language detection in queries
-- Specialized processing chains for different data sources
-
-### llm_rag_v9: Semantic Routing
-- Semantic routing using cosine similarity for prompt selection
-- Calculates similarity between queries and prompt templates
-- Dynamic prompt selection based on content similarity
-- Domain-specific processing based on similarity scores
-
 ## Dependencies
 
 The project uses various LangChain components and external services:
@@ -199,8 +157,6 @@ The project uses various LangChain components and external services:
 - `langchain-text-splitters`: Text chunking utilities
 - `tiktoken`: Tokenization utilities
 - `numpy`: Numerical computing for similarity calculations
-- `pydantic`: For structured output models
-- `scikit-learn`: For cosine similarity calculations
 
 ## Configuration
 
@@ -283,6 +239,7 @@ Feel free to contribute by:
 - Improving existing implementations
 - Adding more comprehensive examples
 - Enhancing documentation
+- Reporting bugs and issues
 
 ## License
 
